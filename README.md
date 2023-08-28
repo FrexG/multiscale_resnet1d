@@ -16,12 +16,8 @@ in_channels = 32
 out_channels = 64
 scale_list = (3,5,7) # multi sclase
 n = 3 # number of conv1d blocks in each residual block
-
-model = MSResnet(in_channels,
-                  out_channels,
-                  n,
-                  scale_list
-                  )
+C = 2 # number of classes
+model = MSResnet(in_channels,out_channels,C,n,scale_list)
 
 out = model(x) # (B,C)
 ```
