@@ -91,7 +91,9 @@ class ResidualBlocks(nn.Module):
 
 
 class MSResnet(nn.Module):
-    def __init__(self, in_channels, n_blocks=3, scale_list: tuple = (3, 5, 7)) -> None:
+    def __init__(
+        self, in_channels, out_channels, n_blocks=3, scale_list: tuple = (3, 5, 7)
+    ) -> None:
         """1D Multi-scale Resitual Network
         Input-shape: (B x C x F) -> batch, num_channels, feature_length
 
@@ -113,9 +115,11 @@ class MSResnet(nn.Module):
             for s in scale_list
         )
 
-        self.avg_pool = nn.AdaptiveAvgPool1d(32)
+        self.avg_pool = nn.AdaptiveAvgPool1d(out_channels)
 
-        self.fcn = nn.Sequential(nn.Linear(len(scale_list) * (2**n_blocks) * 32, 1))
+        self.fcn = nn.Sequential(
+            nn.Linear(len(scale_list) * (2**n_blocks) * out_channels, 1)
+        )
 
     def forward(self, x):
         x = self.input_conv(x)
@@ -129,4 +133,3 @@ class MSResnet(nn.Module):
 
         probs = self.fcn(features.view(x.shape[0], -1))
         return probs
-
